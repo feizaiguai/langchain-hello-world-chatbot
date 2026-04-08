@@ -7,216 +7,125 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-effects">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
-
     <div class="app-container">
-        <header class="app-header glass-panel">
-            <div class="logo-section">
-                <div class="logo-icon">🔗</div>
-                <div class="logo-text">
-                    <h1>LangChain 对话机器人</h1>
-                    <p class="subtitle">基于 LangChain Expression Language (LCEL)</p>
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">🤖</div>
+                    <div class="logo-text">
+                        <h1>LangChain 聊天机器人</h1>
+                        <p class="subtitle">基于 LangChain 的智能对话体验</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="clearHistory" class="btn btn-secondary" title="清空对话历史">
+                        <span>🗑️</span> 清空
+                    </button>
+                    <button id="toggleTheme" class="btn btn-icon" title="切换主题">
+                        <span id="themeIcon">🌙</span>
+                    </button>
                 </div>
             </div>
-            <div class="status-indicator">
-                <span class="status-dot"></span>
-                <span class="status-text">就绪</span>
+            <div class="status-bar">
+                <span class="status-indicator"></span>
+                <span id="connectionStatus">准备就绪</span>
+                <span class="message-count">对话数: <span id="msgCount">0</span></span>
             </div>
         </header>
 
-        <main class="main-content">
-            <section class="chat-section glass-panel">
-                <div class="chat-header">
-                    <h2>💬 对话界面</h2>
-                    <div class="chat-controls">
-                        <button id="clearBtn" class="control-btn" title="清空对话">🗑️</button>
-                    </div>
-                </div>
-                <div id="chatMessages" class="chat-messages">
-                    <div class="welcome-message">
-                        <div class="bot-avatar">🤖</div>
-                        <div class="message-content">
-                            <p>你好！我是基于 LangChain 构建的智能对话机器人。</p>
-                            <p>你可以向我提问关于 LangChain、LCEL、PromptTemplate 等话题的问题。</p>
-                            <p class="example-hint">试试问："什么是 LCEL？" 或 "如何构建 RAG 应用？"</p>
+        <main class="chat-container">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-content">
+                    <div class="welcome-icon">🚀</div>
+                    <h2>欢迎使用 LangChain 对话机器人</h2>
+                    <p>这是一个演示应用，展示如何使用 LangChain 概念构建智能对话界面</p>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <span class="feature-icon">💬</span>
+                            <span>对话模板</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔗</span>
+                            <span>链式调用</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📝</span>
+                            <span>历史管理</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🧠</span>
+                            <span>上下文理解</span>
                         </div>
                     </div>
+                    <button class="btn btn-primary start-chat-btn" id="startChatBtn">
+                        开始对话
+                    </button>
                 </div>
-                <div class="chat-input-container">
-                    <div class="input-wrapper">
-                        <textarea id="userInput" placeholder="输入你的问题..." rows="1"></textarea>
-                        <button id="sendBtn" class="send-btn">🚀</button>
-                    </div>
-                    <div class="input-info">
-                        <span id="charCount">0</span> 字符
-                    </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be dynamically inserted here -->
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-            </section>
-
-            <section class="code-section glass-panel">
-                <div class="code-header">
-                    <h2>📝 LangChain 示例代码</h2>
-                    <div class="code-tabs">
-                        <button class="tab-btn active" data-tab="setup">环境配置</button>
-                        <button class="tab-btn" data-tab="chat">对话机器人</button>
-                        <button class="tab-btn" data-tab="streaming">流式输出</button>
-                    </div>
-                </div>
-                <div class="code-content">
-                    <div id="codeSetup" class="code-block active">
-                        <h3>1. 环境配置和依赖安装</h3>
-                        <pre><code class="language-bash"># 安装 LangChain 及相关依赖
-pip install langchain langchain-openai langchain-anthropic
-pip install langchain-core langchain-community
-
-# 设置环境变量
-export OPENAI_API_KEY="your-api-key-here"
-export ANTHROPIC_API_KEY="your-api-key-here"</code></pre>
-                        <pre><code class="language-python"># Node.js 环境配置
-npm install langchain langchain-openai
-
-import { ChatOpenAI } from "langchain/chat_models/openai";</code></pre>
-                    </div>
-                    <div id="codeChat" class="code-block">
-                        <h3>2. 构建对话机器人 (Python)</h3>
-                        <pre><code class="language-python">from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
-
-# 初始化 ChatOpenAI 模型
-llm = ChatOpenAI(
-    model="gpt-4",
-    temperature=0.7,
-    streaming=True  # 启用流式输出
-)
-
-# 创建提示词模板
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一位专业的 {topic} 导师，用简洁易懂的语言解释概念。"),
-    ("human", "{question}")
-])
-
-# 使用 LCEL 串联组件
-chain = prompt | llm | StrOutputParser()
-
-# 执行问答
-response = chain.invoke({
-    "topic": "人工智能",
-    "question": "什么是 LangChain？"
-})
-
-print(response)</code></pre>
-                    </div>
-                    <div id="codeStreaming" class="code-block">
-                        <h3>3. 流式输出实现</h3>
-                        <pre><code class="language-python"># 同步流式输出
-for chunk in chain.stream({
-    "topic": "编程",
-    "question": "解释一下什么是回调函数"
-}):
-    print(chunk, end="", flush=True)
-
-# 异步流式输出
-async def stream_response():
-    async for chunk in chain.astream({
-        "topic": "Web开发",
-        "question": "什么是 RESTful API？"
-    }):
-        print(chunk, end="", flush=True)
-
-# 带回调的流式处理
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-
-llm_with_screening = ChatOpenAI(
-    model="gpt-4",
-    callbacks=[StreamingStdOutCallbackHandler()]
-)
-
-# LCEL 链式调用
-result = (prompt | llm_with_screening).invoke({
-    "topic": "数据库",
-    "question": "什么是 ACID 属性？"
-})</code></pre>
-                    </div>
-                </div>
-                <button id="copyCodeBtn" class="copy-btn">📋 复制代码</button>
-            </section>
-
-            <section class="readme-section glass-panel">
-                <div class="readme-header">
-                    <h2>📖 README 文档</h2>
-                </div>
-                <div class="readme-content">
-                    <article class="readme-article">
-                        <h3>项目介绍</h3>
-                        <p>这是一个基于 LangChain 构建的智能对话机器人示例项目。本项目演示了如何使用 LangChain Expression Language (LCEL) 构建完整的问答系统。</p>
-                        
-                        <h3>核心特性</h3>
-                        <ul>
-                            <li>✨ <strong>LCEL 链式调用</strong> - 使用管道操作符串联 Prompt、Model、OutputParser</li>
-                            <li>🌊 <strong>流式输出</strong> - 支持实时流式响应，提升用户体验</li>
-                            <li>🎨 <strong>现代化 UI</strong> - Glassmorphism 风格的深色主题界面</li>
-                            <li>📚 <strong>完整文档</strong> - 包含代码示例和使用说明</li>
-                        </ul>
-
-                        <h3>技术栈</h3>
-                        <ul>
-                            <li><strong>后端</strong>: Python, LangChain, OpenAI API / Anthropic API</li>
-                            <li><strong>前端</strong>: Pure HTML/CSS/JavaScript</li>
-                            <li><strong>UI 设计</strong>: Glassmorphism Dark Theme</li>
-                        </ul>
-
-                        <h3>快速开始</h3>
-                        <ol>
-                            <li>安装 Python 和必要的依赖包</li>
-                            <li>配置 OpenAI API Key</li>
-                            <li>运行后端服务</li>
-                            <li>打开前端页面开始对话</li>
-                        </ol>
-
-                        <h3>LCEL 核心概念</h3>
-                        <p>LangChain Expression Language (LCEL) 是一种声明式的方式来组合 LangChain 组件。核心特性包括：</p>
-                        <ul>
-                            <li><strong>| 管道操作符</strong>: 将上一个组件的输出传递给下一个组件</li>
-                            <li><strong>Runnable 接口</strong>: 所有组件都实现统一的 Runnable 接口</li>
-                            <li><strong>流式支持</strong>: 原生支持流式处理和异步操作</li>
-                            <li><strong>批处理</strong>: 内置支持批量处理和并行执行</li>
-                        </ul>
-
-                        <h3>架构图</h3>
-                        <pre class="architecture-diagram">
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Prompt    │────▶│    LLM      │────▶│   Parser    │────▶│   Output    │
-│  Template   │     │  (OpenAI)   │     │ (StrOutput) │     │  (String)   │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-      │                   │                   │                   │
-      └───────────────────┴───────────────────┴───────────────────┘
-                               LCEL 链式调用
-                        </pre>
-                    </article>
-                </div>
-            </section>
+                <span class="typing-text">AI 正在思考...</span>
+            </div>
         </main>
 
-        <footer class="app-footer glass-panel">
-            <p>基于 LangChain 构建 | LangChain Expression Language (LCEL) 示例</p>
-            <p class="footer-links">
-                <a href="#" title="LangChain 文档">📚 文档</a>
-                <a href="#" title="GitHub 仓库">🐙 GitHub</a>
-                <a href="#" title="社区论坛">💬 社区</a>
-            </p>
+        <footer class="input-container">
+            <div class="input-wrapper">
+                <div class="input-tools">
+                    <button class="tool-btn" title="表情包">😊</button>
+                    <button class="tool-btn" title="代码块">&lt;/&gt;</button>
+                    <button class="tool-btn" title="快捷模板">📋</button>
+                </div>
+                <div class="input-field-container">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="输入你的问题... (Shift+Enter 换行)"
+                        rows="1"
+                    ></textarea>
+                    <div class="input-stats">
+                        <span id="charCount">0</span> / 2000
+                    </div>
+                </div>
+                <button id="sendBtn" class="send-btn" disabled>
+                    <span class="send-icon">➤</span>
+                    <span class="send-text">发送</span>
+                </button>
+            </div>
+            <div class="input-hints">
+                <span class="hint">💡 输入 "帮助" 查看可用命令</span>
+                <span class="hint">📌 支持多轮对话上下文</span>
+            </div>
         </footer>
+
+        <aside class="history-panel" id="historyPanel">
+            <div class="history-header">
+                <h3>📚 对话历史</h3>
+                <button class="close-panel-btn" id="closeHistoryPanel">×</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <!-- History items will be inserted here -->
+            </div>
+        </aside>
+
+        <div class="quick-commands" id="quickCommands">
+            <button class="quick-cmd" data-prompt="介绍一下LangChain">📚 LangChain简介</button>
+            <button class="quick-cmd" data-prompt="如何开始使用？">🚀 快速开始</button>
+            <button class="quick-cmd" data-prompt="有哪些核心组件？">🔧 核心组件</button>
+            <button class="quick-cmd" data-prompt="给个代码示例">💻 代码示例</button>
+        </div>
     </div>
 
-    <div id="toast" class="toast"></div>
-    <div id="typingIndicator" class="typing-indicator">
-        <span></span><span></span><span></span>
-    </div>
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="app.js"></script>
 </body>
