@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你好，LangChain！构建第一个对话机器人</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="app-header glass-panel">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div class="title-section">
+                    <h1>LangChain Chatbot</h1>
+                    <p class="subtitle">基于 LangChain 的智能对话机器人</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">在线</span>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <main class="chat-container">
+            <div class="messages-wrapper" id="messagesWrapper">
+                <!-- Welcome Message -->
+                <div class="welcome-message glass-panel">
+                    <div class="welcome-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <h2>欢迎使用 LangChain 对话机器人</h2>
+                    <p>我可以帮助你进行智能对话，支持多轮上下文理解。请选择或输入你的问题类型开始对话：</p>
+                    <div class="quick-prompts">
+                        <button class="prompt-chip" data-prompt="你好，请介绍一下你自己">👋 自我介绍</button>
+                        <button class="prompt-chip" data-prompt="LangChain是什么？它有什么主要功能？">🔗 LangChain介绍</button>
+                        <button class="prompt-chip" data-prompt="请解释什么是RAG，它在AI应用中如何使用？">📚 RAG概念</button>
+                        <button class="prompt-chip" data-prompt="帮我写一段Python代码，使用LangChain构建一个简单的链">💻 代码示例</button>
+                    </div>
+                </div>
+
+                <!-- Messages will be dynamically inserted here -->
+                <div class="messages-container" id="messagesContainer"></div>
+            </div>
+        </main>
+
+        <!-- Input Section -->
+        <footer class="input-section glass-panel">
+            <div class="input-wrapper">
+                <div class="model-selector">
+                    <select id="modelSelector" class="model-select">
+                        <option value="gpt-4">ChatGPT-4</option>
+                        <option value="gpt-3.5">ChatGPT-3.5</option>
+                        <option value="claude-3">Claude-3</option>
+                        <option value="claude-2">Claude-2</option>
+                    </select>
+                    <div class="context-counter">
+                        <span id="contextCount">上下文: 0 条</span>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <textarea 
+                        id="chatInput" 
+                        class="chat-input" 
+                        placeholder="输入你的问题... (Shift+Enter 换行，Enter 发送)"
+                        rows="1"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" title="发送消息">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn" id="clearChat" title="清空对话">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                        <span>清空</span>
+                    </button>
+                    <button class="action-btn" id="exportChat" title="导出对话">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>导出</span>
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Toast Notification -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
